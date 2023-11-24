@@ -271,7 +271,7 @@ public enum HTTPUtils {
      */
     public static <T> Set<T> asSet(List<T> args) {
         Set<T> set = new HashSet<T>();
-        if (!BeanUtils.isEmpty(args)) {
+        if (BeanUtils.isNotEmpty(args)) {
             set.addAll(args);
         }
 
@@ -286,7 +286,7 @@ public enum HTTPUtils {
      * @return
      */
     public static <T> boolean contains(Collection<T> collection, T value) {
-        return ((!BeanUtils.isEmpty(collection)) && collection.contains(value));
+        return ((BeanUtils.isNotEmpty(collection)) && collection.contains(value));
     }
 
     /**
@@ -298,7 +298,7 @@ public enum HTTPUtils {
      * @return
      */
     public static <K, V> boolean keyExists(Map<K, V> keyValues, K key) {
-        return (!BeanUtils.isEmpty(keyValues) && keyValues.keySet().contains(key));
+        return (BeanUtils.isNotEmpty(keyValues) && keyValues.keySet().contains(key));
     }
 
     /**
@@ -312,7 +312,7 @@ public enum HTTPUtils {
         Set<String> setStrings = new HashSet<String>();
         if (BeanUtils.isNotEmpty(valueString) && BeanUtils.isNotEmpty(delimiter)) {
             String[] tokens = valueString.split(delimiter);
-            if (!BeanUtils.isEmpty(tokens)) {
+            if (BeanUtils.isNotEmpty(tokens)) {
                 for (int i = 0; i < tokens.length; i++) {
                     setStrings.add(tokens[i].trim());
                 }
@@ -386,7 +386,7 @@ public enum HTTPUtils {
     @SuppressWarnings("unchecked")
     public static <T> T[] toArray(List<T> list, Class<T> classType) {
         T[] listArray = null;
-        if (!BeanUtils.isEmpty(list)) {
+        if (BeanUtils.isNotEmpty(list)) {
             listArray = (T[]) Array.newInstance(classType, list.size());
             listArray = list.toArray(listArray);
         }
@@ -421,7 +421,7 @@ public enum HTTPUtils {
      */
     public static <T> boolean equals(T type, T... types) {
         boolean result = false;
-        if (BeanUtils.isNotNull(type) && !BeanUtils.isEmpty(types)) {
+        if (BeanUtils.isNotNull(type) && BeanUtils.isNotEmpty(types)) {
             for (int i = 0; i < types.length; i++) {
                 if (types[i].equals(type)) {
                     result = true;
@@ -572,7 +572,7 @@ public enum HTTPUtils {
      */
     public static boolean isInstanceOf(Object object, Class<?>... classTypes) {
         boolean instanceOf = false;
-        if (BeanUtils.isNotNull(object) && !BeanUtils.isEmpty(classTypes)) {
+        if (BeanUtils.isNotNull(object) && BeanUtils.isNotEmpty(classTypes)) {
             for (int i = 0; i < classTypes.length; i++) {
                 if (classTypes[i].isInstance(object)) {
                     instanceOf = true;
@@ -915,7 +915,7 @@ public enum HTTPUtils {
         }
 
         // append urlPrefix, if available.
-        if (!BeanUtils.isEmpty(urlSuffix)) {
+        if (BeanUtils.isNotEmpty(urlSuffix)) {
             if (urlSuffix.startsWith(IOUtils.SLASH)) {
                 urlString.append(urlSuffix);
             } else {
@@ -1323,7 +1323,7 @@ public enum HTTPUtils {
      */
     public static String toCookyString(Map<String, String> mapCookies) {
         String cookies = null;
-        if (!BeanUtils.isEmpty(mapCookies)) {
+        if (BeanUtils.isNotEmpty(mapCookies)) {
             /** Add Cookies. */
             StringBuilder cookyBuilder = new StringBuilder();
             for (String key : mapCookies.keySet()) {
@@ -1339,7 +1339,7 @@ public enum HTTPUtils {
                 }
             }
 
-            if (!BeanUtils.isEmpty(cookyBuilder)) {
+            if (BeanUtils.isNotEmpty(cookyBuilder)) {
                 cookies = cookyBuilder.toString();
                 cookyBuilder = null;
             }
@@ -1356,14 +1356,14 @@ public enum HTTPUtils {
      */
     public static Map<String, String> mergeCookies(final Map<String, String> mapCookies) {
         Map<String, String> mergedCookies = new HashMap<String, String>();
-        if (!BeanUtils.isEmpty(mapCookies)) {
+        if (BeanUtils.isNotEmpty(mapCookies)) {
             /** Merge Cookies. */
             for (String key : mapCookies.keySet()) {
                 String value = mapCookies.get(key);
                 if (BeanUtils.isNotEmpty(value)) {
                     if (equals(Headers.COOKIE, key)) {
                         Map<String, String> oldCookies = extractCookies(value);
-                        if (!BeanUtils.isEmpty(oldCookies)) {
+                        if (BeanUtils.isNotEmpty(oldCookies)) {
                             mergedCookies.putAll(oldCookies);
                         }
                     } else {
@@ -1410,7 +1410,7 @@ public enum HTTPUtils {
      */
     public static String toUrlQueryString(final Map<String, Object> requestParameters) {
         String urlQueryString = null;
-        if (!BeanUtils.isEmpty(requestParameters)) {
+        if (BeanUtils.isNotEmpty(requestParameters)) {
             StringBuilder aueryString = new StringBuilder();
             boolean firstParam = true;
             for (String key : requestParameters.keySet()) {
@@ -1481,10 +1481,10 @@ public enum HTTPUtils {
         if (BeanUtils.isNotEmpty(encodedParameters)) {
             String decodedParameters = GuardUtils.decodeWithURLDecoder(encodedParameters);
             String[] paramTokens = decodedParameters.split("&");
-            if (!BeanUtils.isEmpty(paramTokens)) {
+            if (BeanUtils.isNotEmpty(paramTokens)) {
                 for (int i = 0; i < paramTokens.length; i++) {
                     String[] tokens = paramTokens[i].split("=");
-                    if (!BeanUtils.isEmpty(tokens) && tokens.length > 1) {
+                    if (BeanUtils.isNotEmpty(tokens) && tokens.length > 1) {
                         requestParameters.put(tokens[0], tokens[1]);
                     }
                 }
@@ -1502,7 +1502,7 @@ public enum HTTPUtils {
      * @param requestHeaders
      */
     public static void setRequestHeaders(HttpURLConnection urlConnection, Map<String, String> requestHeaders) {
-        if (BeanUtils.isNotNull(urlConnection) && !BeanUtils.isEmpty(requestHeaders)) {
+        if (BeanUtils.isNotNull(urlConnection) && BeanUtils.isNotEmpty(requestHeaders)) {
             for (String headerKey : requestHeaders.keySet()) {
                 String headerValue = requestHeaders.get(headerKey);
                 LOGGER.debug("headerKey:{}, headerValue:{}", headerKey, headerValue);
@@ -1720,7 +1720,7 @@ public enum HTTPUtils {
      */
     public static String getMimeType(Map<String, List<String>> headers) {
         String mimeType = null;
-        if (!BeanUtils.isEmpty(headers)) {
+        if (BeanUtils.isNotEmpty(headers)) {
             mimeType = headers.get(Headers.CONTENT_TYPE).get(0);
             if (mimeType.indexOf(";") != -1) {
                 mimeType = mimeType.substring(0, mimeType.indexOf(";")).trim();
@@ -1764,14 +1764,14 @@ public enum HTTPUtils {
     public static Map<String, String> extractCookies(Map<String, List<String>> responseHeaders) {
         Map<String, String> mapCookies = null;
         System.out.println("+extractCookies(" + responseHeaders + ")");
-        if (!BeanUtils.isEmpty(responseHeaders)) {
+        if (BeanUtils.isNotEmpty(responseHeaders)) {
             List<String> allCookies = responseHeaders.get(Headers.SET_COOKIE);
             System.out.println("allCookies:" + allCookies);
-            if (!BeanUtils.isEmpty(allCookies)) {
+            if (BeanUtils.isNotEmpty(allCookies)) {
                 mapCookies = new HashMap<String, String>();
                 for (String stringCookie : allCookies) {
                     Map<String, String> extractedCookies = extractCookies(stringCookie);
-                    if (!BeanUtils.isEmpty(extractedCookies)) {
+                    if (BeanUtils.isNotEmpty(extractedCookies)) {
                         mapCookies.putAll(extractedCookies);
                     }
                 }
@@ -1828,7 +1828,7 @@ public enum HTTPUtils {
         // " + key +
         // ", " + defaultValue + ")");
         Object value = null;
-        if (!BeanUtils.isEmpty(mapKeyValues) && !BeanUtils.isEmpty(key)) {
+        if (BeanUtils.isNotEmpty(mapKeyValues) && BeanUtils.isNotEmpty(key)) {
             value = mapKeyValues.get(key);
         }
 
@@ -1916,7 +1916,7 @@ public enum HTTPUtils {
      */
     public static Map<String, String> headerValuesAsString(Map<String, List<String>> headers) {
         Map<String, String> mapHeaders = new HashMap<String, String>();
-        if (!BeanUtils.isEmpty(headers)) {
+        if (BeanUtils.isNotEmpty(headers)) {
             Set<Map.Entry<String, List<String>>> entries = headers.entrySet();
             for (Map.Entry<String, List<String>> entry : entries) {
                 mapHeaders.put(entry.getKey(), entry.getValue().get(0));
@@ -1934,7 +1934,7 @@ public enum HTTPUtils {
         System.out.println("+getContentDispositionFileNameValue(" + contentDisposition + ")");
 
         String valueFileName = null;
-        if (!BeanUtils.isEmpty(contentDisposition)) {
+        if (BeanUtils.isNotEmpty(contentDisposition)) {
             int fileNameIndex = contentDisposition.indexOf(Values.FILE_NAME_EQUAL);
             if (fileNameIndex > -1 && fileNameIndex < contentDisposition.length() - 1) {
                 valueFileName = contentDisposition.substring(fileNameIndex + Values.FILE_NAME_EQUAL.length());
@@ -2006,7 +2006,7 @@ public enum HTTPUtils {
      */
     public static boolean isExcludedParameter(String paramName) {
         boolean excludedParameter = false;
-        if (BeanUtils.isNotEmpty(paramName) && !BeanUtils.isEmpty(getExcludedParameters())) {
+        if (BeanUtils.isNotEmpty(paramName) && BeanUtils.isNotEmpty(getExcludedParameters())) {
             for (int i = 0; i < excludedParameters.size(); i++) {
                 if (excludedParameters.contains(paramName)) {
                     excludedParameter = true;
@@ -2024,7 +2024,7 @@ public enum HTTPUtils {
      * @param sortedParameters
      */
     public static void removeExcludedParameters(SortedMap<String, Object> sortedParameters) {
-        if (!BeanUtils.isEmpty(sortedParameters) && !BeanUtils.isEmpty(getExcludedParameters())) {
+        if (BeanUtils.isNotEmpty(sortedParameters) && BeanUtils.isNotEmpty(getExcludedParameters())) {
             for (int i = 0; i < excludedParameters.size(); i++) {
                 sortedParameters.remove(excludedParameters.get(i));
             }
@@ -2039,7 +2039,7 @@ public enum HTTPUtils {
      */
     public static String paramValuesAsHashString(SortedMap<String, Object> requestParameters) {
         String valuesAsHashString = null;
-        if (!BeanUtils.isEmpty(requestParameters)) {
+        if (BeanUtils.isNotEmpty(requestParameters)) {
             SortedMap<String, Object> sortedParameters = toSortedMap(requestParameters);
             /* remove existing custom parameters, if available */
             removeExcludedParameters(sortedParameters);
@@ -2070,7 +2070,7 @@ public enum HTTPUtils {
      */
     public static boolean isExcludedMethodRequest(String requestMethodName, String... excludedMethods) {
         boolean excludedMethodRequest = false;
-        if (!BeanUtils.isEmpty(requestMethodName) && !BeanUtils.isEmpty(excludedMethods)) {
+        if (BeanUtils.isNotEmpty(requestMethodName) && BeanUtils.isNotEmpty(excludedMethods)) {
             for (int i = 0; i < excludedMethods.length; i++) {
                 if (excludedMethods[i].equalsIgnoreCase(requestMethodName)) {
                     excludedMethodRequest = true;
@@ -2104,7 +2104,7 @@ public enum HTTPUtils {
      */
     public static void filterRequestParameters(SortedMap<String, Object> requestParameters,
                                                boolean excludedMethodRequest) {
-        if (excludedMethodRequest && !BeanUtils.isEmpty(requestParameters)) {
+        if (excludedMethodRequest && BeanUtils.isNotEmpty(requestParameters)) {
             SortedMap<String, Object> filteredParameters = new TreeMap<String, Object>(requestParameters);
             for (String key : filteredParameters.keySet()) {
                 if (("rand".equals(key) || "_".equals(key))) {
@@ -2146,7 +2146,7 @@ public enum HTTPUtils {
      */
     public static String paramValuesAsString(String... paramValues) {
         String valuesAsString = null;
-        if (!BeanUtils.isEmpty(paramValues)) {
+        if (BeanUtils.isNotEmpty(paramValues)) {
             StringBuilder hashBuffer = new StringBuilder();
             Arrays.sort(paramValues);
             for (int i = 0; i < paramValues.length; i++) {
@@ -2170,7 +2170,7 @@ public enum HTTPUtils {
      */
     public static String paramValuesAsString(List<String> paramValues) {
         String valuesAsString = null;
-        if (!BeanUtils.isEmpty(paramValues)) {
+        if (BeanUtils.isNotEmpty(paramValues)) {
             StringBuilder hashBuffer = new StringBuilder();
             Collections.sort(paramValues);
             for (String paramValue : paramValues) {
@@ -2194,7 +2194,7 @@ public enum HTTPUtils {
      */
     public static String paramValuesAsString(SortedMap<String, ? extends Object> requestParameters) {
         String valuesAsString = null;
-        if (!BeanUtils.isEmpty(requestParameters)) {
+        if (BeanUtils.isNotEmpty(requestParameters)) {
             StringBuilder hashBuffer = new StringBuilder();
             /* the iteration should be name in the same order each time. */
             for (String key : requestParameters.keySet()) {
@@ -2218,9 +2218,9 @@ public enum HTTPUtils {
      * @param values
      */
     public static void addToHashBuffer(final StringBuilder hashBuffer, String... values) {
-        if (BeanUtils.isNotNull(hashBuffer) && !BeanUtils.isEmpty(values)) {
+        if (BeanUtils.isNotNull(hashBuffer) && BeanUtils.isNotEmpty(values)) {
             for (int i = 0; i < values.length; i++) {
-                if (!BeanUtils.isEmpty(values[i])) {
+                if (BeanUtils.isNotEmpty(values[i])) {
                     hashBuffer.append(values[i]);
                 }
             }
@@ -2261,7 +2261,7 @@ public enum HTTPUtils {
      */
     public static String getHostNameFromUrl(String urlString) {
         String hostName = urlString;
-        if (!BeanUtils.isEmpty(urlString)) {
+        if (BeanUtils.isNotEmpty(urlString)) {
             int startIndex = urlString.indexOf("://");
             if (startIndex >= 0) {
                 startIndex += "://".length();
@@ -2332,7 +2332,7 @@ public enum HTTPUtils {
      */
     public static boolean startsWith(String value, String... prefixes) {
         boolean result = false;
-        if (!BeanUtils.isEmpty(value) && prefixes != null) {
+        if (BeanUtils.isNotEmpty(value) && prefixes != null) {
             for (String prefix : prefixes) {
                 if (value.startsWith(prefix)) {
                     result = true;
