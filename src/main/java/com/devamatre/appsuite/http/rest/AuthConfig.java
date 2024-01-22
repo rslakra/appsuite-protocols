@@ -157,14 +157,14 @@ public class AuthConfig {
 
         }
 
-//        protected OAuthConsumer oauth;
+// protected OAuthConsumer oauth;
 //
-//        public OAuthSigner(String consumerKey, String consumerSecret, String accessToken, String secretToken) {
+// public OAuthSigner(String consumerKey, String consumerSecret, String accessToken, String secretToken) {
 //            this.oauth = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
 //            this.oauth.setTokenWithSecret(accessToken, secretToken);
-//        }
+// }
 //
-//        public void process(HttpRequest request, HttpContext ctx) throws HttpException, IOException {
+// public void process(HttpRequest request, HttpContext ctx) throws HttpException, IOException {
 //            try {
 //                HttpHost host = (HttpHost) ctx.getAttribute("rest.target_host");
 //                URI requestURI = (new URI(host.toURI())).resolve(request.getRequestLine().getUri());
@@ -177,9 +177,9 @@ public class AuthConfig {
 //            } catch (OAuthException var7) {
 //                throw new HttpException("OAuth signing error", var7);
 //            }
-//        }
+// }
 //
-//        static class OAuthRequestAdapter implements oauth.signpost.rest.HttpRequest {
+// static class OAuthRequestAdapter implements oauth.signpost.rest.HttpRequest {
 //
 //            final HttpRequest request;
 //            final URI requestURI;
@@ -235,6 +235,6 @@ public class AuthConfig {
 //            public Object unwrap() {
 //                return this.request;
 //            }
-//        }
+// }
     }
 }

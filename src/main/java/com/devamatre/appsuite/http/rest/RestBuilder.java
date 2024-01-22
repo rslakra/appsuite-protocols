@@ -152,7 +152,7 @@ public class RestBuilder {
         RequestDelegate
             requestDelegate =
             new RequestDelegate(this, new HttpPost(), getContentType(), getHeaders(), getResponseHandlers());
-//        requestDelegate.setRequestContentType(ContentType.URLENC.toString());
+// requestDelegate.setRequestContentType(ContentType.URLENC.toString());
         requestDelegate.setPropertiesFromMap(args);
         if (responseClosure != null) {
             requestDelegate.getResponse().put(RestStatus.SUCCESS.toString(), responseClosure);
@@ -401,8 +401,8 @@ public class RestBuilder {
      */
     protected Map<Object, Closure> buildDefaultResponseHandlers() {
         final Map<Object, Closure> map = new Payload();
-//        map.put(Status.SUCCESS, new MethodClosure(this, "defaultSuccessHandler"));
-//        map.put(Status.FAILURE, new MethodClosure(this, "defaultFailureHandler"));
+// map.put(Status.SUCCESS, new MethodClosure(this, "defaultSuccessHandler"));
+// map.put(Status.FAILURE, new MethodClosure(this, "defaultFailureHandler"));
         return map;
     }
 
@@ -414,7 +414,7 @@ public class RestBuilder {
      */
     protected Object defaultSuccessHandler(HttpResponseDecorator response, Object parsedData)
         throws ResponseParseException {
-//        try {
+// try {
 //            if (parsedData instanceof InputStream) {
 //                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 //                DefaultMethods.leftShift(buffer, (InputStream) parsedData);
@@ -429,9 +429,9 @@ public class RestBuilder {
 //            }
 //
 //            return parsedData;
-//        } catch (IOException ex) {
+// } catch (IOException ex) {
 //            throw new ResponseParseException(response, ex);
-//        }
+// }
         return null;
     }
 
@@ -557,8 +557,8 @@ public class RestBuilder {
      * @return
      */
     protected HttpClient createClient(HttpParams params) {
-//        HttpClientBuilder.create()
-//        return new HttpClientBuilder(params);
+// HttpClientBuilder.create()
+// return new HttpClientBuilder(params);
         return null;
     }
 
@@ -606,8 +606,8 @@ public class RestBuilder {
             }
         };
 
-//        HttpClientBuilder.create().setSSLSocketFactory().build();
-//        SSLConnectionSocketFactory.getSocketFactory().createLayeredSocket()
+// HttpClientBuilder.create().setSSLSocketFactory().build();
+// SSLConnectionSocketFactory.getSocketFactory().createLayeredSocket()
         SSLSocketFactory
             sslSocketFactory =
             new SSLSocketFactory(trustStrategy, SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
