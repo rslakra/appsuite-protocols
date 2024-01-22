@@ -56,12 +56,12 @@ import org.apache.http.ssl.SSLContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
+import javax.net.ServerSocketFactory;
+import javax.net.ssl.HttpsURLConnection;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
 import java.net.CookieHandler;
@@ -73,22 +73,8 @@ import java.net.Proxy;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
-import java.security.GeneralSecurityException;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.Principal;
-import java.security.SecureRandom;
-import java.security.cert.CertPath;
-import java.security.cert.CertPathValidator;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.PKIXParameters;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -105,20 +91,6 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
-
-import javax.net.ServerSocketFactory;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Rohtash Lakra
@@ -140,10 +112,10 @@ public enum HTTPUtils {
     public static final int RETRY_INTERVAL = 1000;
 
     public static final List<BasicHeader>
-        DEFAULT_HEADERS =
-        Arrays.asList(new BasicHeader(HttpHeaders.ACCEPT, WILDCARD),
-                      new BasicHeader(HttpHeaders.ACCEPT_LANGUAGE, ACCEPT_LANGUAGE_VALUE),
-                      new BasicHeader(HttpHeaders.CONNECTION, KEEP_ALIVE));
+            DEFAULT_HEADERS =
+            Arrays.asList(new BasicHeader(HttpHeaders.ACCEPT, WILDCARD),
+                    new BasicHeader(HttpHeaders.ACCEPT_LANGUAGE, ACCEPT_LANGUAGE_VALUE),
+                    new BasicHeader(HttpHeaders.CONNECTION, KEEP_ALIVE));
 
     interface Values {
 
@@ -192,25 +164,25 @@ public enum HTTPUtils {
     /**
      * mimeTypes
      */
-    private static Map<String, String> mimeTypes;
+    private static Map<String, String> MIME_TYPES;
 
     /* urlToDomainMap */
     private static final Map<String, String> URL_TO_DOMAIN_MAP = new HashMap<>(3);
 
     /* headersIgnored */
-    private static String[] headersIgnored;
+    private static String[] IGNORED_HEADERS;
 
     /* excludedHeaders */
-    private static List<String> excludedHeaders;
+    private static final List<String> EXCLUDED_HEADERS = new ArrayList<>();;
 
     /* excludedParameters */
-    private static List<String> excludedParameters;
+    private static final List<String> EXCLUDED_PARAMS = new ArrayList<>();
 
     /* excludedMethods */
-    private static List<String> excludedMethods;
+    private static final List<String> EXCLUDED_METHODS = new ArrayList<>();
 
     // deviceModel - used in user-agent
-    private static String deviceModel;
+    private static String DEVICE_MODEL;
 
     /**
      * Initializes the cooky manager.
@@ -713,7 +685,7 @@ public enum HTTPUtils {
      * @return
      */
     public static String getDeviceModel() {
-        return deviceModel;
+        return DEVICE_MODEL;
     }
 
     /**
@@ -722,7 +694,7 @@ public enum HTTPUtils {
      * @param newDeviceModel
      */
     public static void setDeviceModel(String newDeviceModel) {
-        deviceModel = newDeviceModel;
+        DEVICE_MODEL = newDeviceModel;
     }
 
     /**
@@ -955,28 +927,28 @@ public enum HTTPUtils {
      * @return
      */
     public static String getMimeType(String extensionType) {
-        if (mimeTypes == null) {
-            mimeTypes = new HashMap<String, String>();
-            mimeTypes.put("css", "text/css");
-            mimeTypes.put("eot", "application/vnd.ms-fontobject");
-            mimeTypes.put("gif", "image/gif");
-            mimeTypes.put("html", "text/html");
-            mimeTypes.put("htm", "text/html");
-            mimeTypes.put("ico", "image/ico");
-            mimeTypes.put("jpeg", "image/jpeg");
-            mimeTypes.put("jpg", "image/jpeg");
-            mimeTypes.put("js", "application/javascript");
-            mimeTypes.put("json", "application/json");
-            mimeTypes.put("m4a", "audio/mp4a-latm");
-            mimeTypes.put("pdf", "application/pdf");
-            mimeTypes.put("png", "image/png");
-            mimeTypes.put("svg", "image/svg+xml");
-            mimeTypes.put("ttf", "font/opentype");
-            mimeTypes.put("woff", "font/woff");
-            mimeTypes.put("woff2", "font/woff2");
+        if (MIME_TYPES == null) {
+            MIME_TYPES = new HashMap<String, String>();
+            MIME_TYPES.put("css", "text/css");
+            MIME_TYPES.put("eot", "application/vnd.ms-fontobject");
+            MIME_TYPES.put("gif", "image/gif");
+            MIME_TYPES.put("html", "text/html");
+            MIME_TYPES.put("htm", "text/html");
+            MIME_TYPES.put("ico", "image/ico");
+            MIME_TYPES.put("jpeg", "image/jpeg");
+            MIME_TYPES.put("jpg", "image/jpeg");
+            MIME_TYPES.put("js", "application/javascript");
+            MIME_TYPES.put("json", "application/json");
+            MIME_TYPES.put("m4a", "audio/mp4a-latm");
+            MIME_TYPES.put("pdf", "application/pdf");
+            MIME_TYPES.put("png", "image/png");
+            MIME_TYPES.put("svg", "image/svg+xml");
+            MIME_TYPES.put("ttf", "font/opentype");
+            MIME_TYPES.put("woff", "font/woff");
+            MIME_TYPES.put("woff2", "font/woff2");
         }
 
-        return mimeTypes.get(extensionType);
+        return MIME_TYPES.get(extensionType);
     }
 
     /**
@@ -1000,8 +972,8 @@ public enum HTTPUtils {
             urlConnection = openHttpURLConnection(urlString, null);
             setConnectTimeoutProperties(urlConnection);
             serverReachable =
-                (urlConnection != null && (urlConnection.getResponseCode() == 200
-                                           || urlConnection.getContent() != null));
+                    (urlConnection != null && (urlConnection.getResponseCode() == 200
+                            || urlConnection.getContent() != null));
         } catch (Exception ex) {
             serverReachable = false;
         } finally {
@@ -1124,8 +1096,8 @@ public enum HTTPUtils {
      */
     public static HttpURLConnection openHttpURLConnection(URL url, Proxy proxy) throws IOException {
         return (BeanUtils.isNotNull(url) ? (HttpURLConnection) (BeanUtils.isNotNull(proxy) ? url.openConnection(proxy)
-                                                                                           : url.openConnection())
-                                         : null);
+                : url.openConnection())
+                : null);
     }
 
     /**
@@ -1177,7 +1149,7 @@ public enum HTTPUtils {
      */
     public static HttpsURLConnection openHttpsURLConnection(URL url, Proxy proxy) throws IOException {
         return (BeanUtils.isNotNull(url) && url.getProtocol().equals("https") ? (HttpsURLConnection) (
-            BeanUtils.isNotNull(proxy) ? url.openConnection(proxy) : url.openConnection()) : null);
+                BeanUtils.isNotNull(proxy) ? url.openConnection(proxy) : url.openConnection()) : null);
     }
 
     /**
@@ -1254,7 +1226,7 @@ public enum HTTPUtils {
      * @throws IOException
      */
     public static void setConnectionDefaultProperties(final HttpURLConnection urlConnection, final String requestMethod)
-        throws IOException {
+            throws IOException {
         if (BeanUtils.isNotNull(urlConnection)) {
             // set connection timeout properties.
             setConnectTimeoutProperties(urlConnection);
@@ -1537,7 +1509,7 @@ public enum HTTPUtils {
                                           final Map<String, String> requestHeaders,
                                           final Map<String, Object> requestParameters, final boolean closeStream) {
         LOGGER.debug("+executeRequest({}, {}, {}, {}, {})", urlString, httpMethod, requestHeaders, requestParameters,
-                     closeStream);
+                closeStream);
         final StopWatch stopWatch = new StopWatch();
         Response httpResponse = null;
         HttpURLConnection urlConnection = null;
@@ -1744,9 +1716,9 @@ public enum HTTPUtils {
             mapCookies = new HashMap<String, String>();
             String[] cookies = stringCookies.split(";");
             for (String cookie : cookies) {
-                Pairs<String, String> pairs = Pairs.newPair(cookie);
-                if (pairs != null) {
-                    mapCookies.put(pairs.getKey(), pairs.getValue());
+                Pair<String, String> pair = Pair.newPair(cookie);
+                if (pair != null) {
+                    mapCookies.put(pair.getKey(), pair.getValue());
                 }
             }
         }
@@ -1951,24 +1923,23 @@ public enum HTTPUtils {
      * @return
      */
     public static List<String> getExcludedHeaders() {
-        if (BeanUtils.isNull(excludedHeaders)) {
-            excludedHeaders = new ArrayList<String>();
+        if (BeanUtils.isEmpty(EXCLUDED_HEADERS)) {
             /*
              * excluded the following headers from the request/response headers.
              */
-            excludedHeaders.add("Host");
-            excludedHeaders.add("Accept");
-            excludedHeaders.add("Origin");
-            excludedHeaders.add("X-Requested-With");
-            excludedHeaders.add("User-Agent");
-            excludedHeaders.add("Content-Length");
-            excludedHeaders.add("Referer");
-            excludedHeaders.add("Accept-Encoding");
-            excludedHeaders.add("Accept-Language");
-            excludedHeaders.add("Cookie");
+            EXCLUDED_HEADERS.add("Host");
+            EXCLUDED_HEADERS.add("Accept");
+            EXCLUDED_HEADERS.add("Origin");
+            EXCLUDED_HEADERS.add("X-Requested-With");
+            EXCLUDED_HEADERS.add("User-Agent");
+            EXCLUDED_HEADERS.add("Content-Length");
+            EXCLUDED_HEADERS.add("Referer");
+            EXCLUDED_HEADERS.add("Accept-Encoding");
+            EXCLUDED_HEADERS.add("Accept-Language");
+            EXCLUDED_HEADERS.add("Cookie");
         }
 
-        return excludedHeaders;
+        return EXCLUDED_HEADERS;
     }
 
     /**
@@ -1976,12 +1947,12 @@ public enum HTTPUtils {
      *
      * @return
      */
-    public static String[] getHeadersIgnored() {
-        if (BeanUtils.isNull(headersIgnored)) {
-            headersIgnored = toArray(getExcludedHeaders(), String.class);
+    public static String[] getIgnoredHeaders() {
+        if (BeanUtils.isNull(IGNORED_HEADERS)) {
+            IGNORED_HEADERS = toArray(getExcludedHeaders(), String.class);
         }
 
-        return headersIgnored;
+        return IGNORED_HEADERS;
     }
 
     /**
@@ -1990,12 +1961,11 @@ public enum HTTPUtils {
      * @return
      */
     public static List<String> getExcludedParameters() {
-        if (BeanUtils.isNull(excludedParameters)) {
-            excludedParameters = new ArrayList<String>();
+        if (BeanUtils.isEmpty(EXCLUDED_PARAMS)) {
             /* remove the following parameters before generating hashCode. */
         }
 
-        return excludedMethods;
+        return EXCLUDED_PARAMS;
     }
 
     /**
@@ -2007,8 +1977,8 @@ public enum HTTPUtils {
     public static boolean isExcludedParameter(String paramName) {
         boolean excludedParameter = false;
         if (BeanUtils.isNotEmpty(paramName) && BeanUtils.isNotEmpty(getExcludedParameters())) {
-            for (int i = 0; i < excludedParameters.size(); i++) {
-                if (excludedParameters.contains(paramName)) {
+            for (int i = 0; i < EXCLUDED_PARAMS.size(); i++) {
+                if (EXCLUDED_PARAMS.contains(paramName)) {
                     excludedParameter = true;
                     break;
                 }
@@ -2025,8 +1995,8 @@ public enum HTTPUtils {
      */
     public static void removeExcludedParameters(SortedMap<String, Object> sortedParameters) {
         if (BeanUtils.isNotEmpty(sortedParameters) && BeanUtils.isNotEmpty(getExcludedParameters())) {
-            for (int i = 0; i < excludedParameters.size(); i++) {
-                sortedParameters.remove(excludedParameters.get(i));
+            for (int i = 0; i < EXCLUDED_PARAMS.size(); i++) {
+                sortedParameters.remove(EXCLUDED_PARAMS.get(i));
             }
         }
     }
@@ -2088,12 +2058,11 @@ public enum HTTPUtils {
      * @return
      */
     public static List<String> getExcludedMethods() {
-        if (BeanUtils.isNull(excludedMethods)) {
-            excludedMethods = new ArrayList<String>();
+        if (BeanUtils.isEmpty(EXCLUDED_METHODS)) {
             /* add more methods if required. */
         }
 
-        return excludedMethods;
+        return EXCLUDED_METHODS;
     }
 
     /**
@@ -2311,8 +2280,8 @@ public enum HTTPUtils {
                     int lastDotIndex = hostDomainOnly.lastIndexOf(".");
                     if (lastDotIndex != -1) {
                         hostName =
-                            hostName.substring(lastDotIndex + 1, hostDomainOnly.length()) + hostName.substring(
-                                dotIndex);
+                                hostName.substring(lastDotIndex + 1, hostDomainOnly.length()) + hostName.substring(
+                                        dotIndex);
                     }
                 }
             }
@@ -2383,703 +2352,6 @@ public enum HTTPUtils {
     public static boolean containsAnyone(String string, String... args) {
         return containsAnyone(false, string, args);
     }
-
-    /**
-     * Added to handle the key/value pair.
-     *
-     * @param <K>
-     * @param <V>
-     * @author Rohtash Lakra
-     * @date 04/19/2017 11:12:00 AM
-     */
-    public static class Pairs<K, V> implements Serializable {
-
-        /**
-         * serialVersionUID
-         */
-        private static final long serialVersionUID = 1L;
-
-        private final K key;
-        private final V value;
-
-        /**
-         * Extracts the key and value from the specified
-         * <code>keyValueString</code> based on the equals to (=) sign, if its
-         * not null or empty otherwise null.
-         *
-         * @param keyValueString
-         * @return
-         */
-        public static Pairs<String, String> newPair(String keyValueString) {
-            Pairs<String, String> pairs = null;
-            if (BeanUtils.isNotEmpty(keyValueString)) {
-                int equalIndex = keyValueString.indexOf("=");
-                if (equalIndex != -1) {
-                    String key = keyValueString.substring(0, equalIndex).trim();
-                    int lastIndex = keyValueString.indexOf(";");
-                    String value = null;
-                    if (lastIndex != -1) {
-                        value = keyValueString.substring(equalIndex + 1, lastIndex).trim();
-                    } else {
-                        value = keyValueString.substring(equalIndex + 1).trim();
-                    }
-                    pairs = new Pairs<String, String>(key, value);
-                }
-            }
-
-            return pairs;
-        }
-
-        /**
-         * @param key
-         * @param value
-         */
-        public Pairs(K key, V value) {
-            this.key = key;
-            this.value = value;
-        }
-
-        /**
-         * Returns the key.
-         *
-         * @return
-         */
-        public final K getKey() {
-            return key;
-        }
-
-        /**
-         * Return the value.
-         *
-         * @return
-         */
-        public final V getValue() {
-            return value;
-        }
-
-        /**
-         * @see java.lang.Object#equals(java.lang.Object)
-         */
-        @Override
-        public final boolean equals(Object object) {
-            if (!(object instanceof Pairs)) {
-                return false;
-            }
-            Pairs<?, ?> pairs = (Pairs<?, ?>) object;
-            return (getKey().equals(pairs.getKey()) && getValue().equals(pairs.getValue()));
-        }
-
-        /**
-         * Returns the hash code of this object.
-         *
-         * @see java.lang.Object#hashCode()
-         */
-        @Override
-        public final int hashCode() {
-            return (getKey() == null ? 0 : getKey().hashCode()) ^ (getValue() == null ? 0 : getValue().hashCode());
-        }
-
-        /**
-         * Returns the string representation of this object.
-         *
-         * @see java.lang.Object#toString()
-         */
-        @Override
-        public final String toString() {
-            return (getKey() + "=" + getValue());
-        }
-    }
-
-    /**
-     * Create an HostnameVerifier that hardwires the expected hostname. Note that is different than the URL's hostname:
-     * example.com versus example.org
-     *
-     * @author Rohtash Lakra
-     * @date 04/17/2017 12:40:31 PM
-     */
-    public static final class AllHostVerifier implements HostnameVerifier {
-
-        public AllHostVerifier() {
-        }
-
-        /*
-         * @see javax.net.ssl.HostnameVerifier#verify(java.lang.String,
-         * javax.net.ssl.SSLSession)
-         */
-        @Override
-        public boolean verify(String hostname, SSLSession session) {
-            return true;
-        }
-    }
-
-    /**
-     * A custom X509TrustManager implementation that trusts a specified server certificate in addition to those that are
-     * in the system TrustStore. Also handles an out-of-order certificate chain, as is often produced by Apache's
-     * mod_ssl
-     *
-     * @author Rohtash Lakra
-     * @date 04/17/2017 05:57:55 PM
-     * @see "http://chariotsolutions.com/blog/post/https-with-client-certificates-on"
-     * https://github.com/rfreedman/android-ssl
-     */
-    public static final class CustomTrustManager implements X509TrustManager {
-
-        /* originalX509TrustManager */
-        private final X509TrustManager originalX509TrustManager;
-
-        /* trustStore */
-        private final KeyStore trustStore;
-
-        /**
-         * @param trustStore A KeyStore containing the server certificate that should be trusted
-         * @throws NoSuchAlgorithmException
-         * @throws KeyStoreException
-         */
-        public CustomTrustManager(KeyStore trustStore) throws NoSuchAlgorithmException, KeyStoreException {
-            this.trustStore = trustStore;
-
-            TrustManagerFactory originalTrustManagerFactory = TrustManagerFactory.getInstance("X509");
-            originalTrustManagerFactory.init((KeyStore) null);
-
-            TrustManager[] originalTrustManagers = originalTrustManagerFactory.getTrustManagers();
-            originalX509TrustManager = (X509TrustManager) originalTrustManagers[0];
-        }
-
-        /**
-         * No-op. Never invoked by client, only used in server-side implementations
-         *
-         * @return
-         */
-        public X509Certificate[] getAcceptedIssuers() {
-            return new X509Certificate[0];
-        }
-
-        /**
-         * No-op. Never invoked by client, only used in server-side implementations
-         *
-         * @return
-         */
-        public void checkClientTrusted(X509Certificate[] chain, String authType)
-            throws java.security.cert.CertificateException {
-        }
-
-        /**
-         * Given the partial or complete certificate chain provided by the peer, build a certificate path to a trusted
-         * root and return if it can be validated and is trusted for client SSL authentication based on the
-         * authentication type. The authentication type is determined by the actual certificate used. For instance, if
-         * RSAPublicKey is used, the authType should be "RSA". Checking is case-sensitive. Defers to the default trust
-         * manager first, checks the cert supplied in the ctor if that fails.
-         *
-         * @param chain    the server's certificate chain
-         * @param authType the authentication type based on the client certificate
-         * @throws java.security.cert.CertificateException
-         */
-        public void checkServerTrusted(X509Certificate[] chain, String authType)
-            throws java.security.cert.CertificateException {
-            try {
-                originalX509TrustManager.checkServerTrusted(chain, authType);
-            } catch (CertificateException originalException) {
-                try {
-                    X509Certificate[] reorderedChain = reorderCertificateChain(chain);
-                    CertPathValidator validator = CertPathValidator.getInstance("PKIX");
-                    CertificateFactory factory = CertificateFactory.getInstance("X509");
-                    CertPath certPath = factory.generateCertPath(Arrays.asList(reorderedChain));
-                    PKIXParameters params = new PKIXParameters(trustStore);
-                    params.setRevocationEnabled(false);
-                    validator.validate(certPath, params);
-                } catch (Exception ex) {
-                    throw originalException;
-                }
-            }
-
-        }
-
-        /**
-         * Puts the certificate chain in the proper order, to deal with out-of-order certificate chains as are sometimes
-         * produced by Apache's mod_ssl
-         *
-         * @param chain the certificate chain, possibly with bad ordering
-         * @return the re-ordered certificate chain
-         */
-        private X509Certificate[] reorderCertificateChain(X509Certificate[] chain) {
-            X509Certificate[] reorderedChain = new X509Certificate[chain.length];
-            List<X509Certificate> certificates = Arrays.asList(chain);
-
-            int position = chain.length - 1;
-            X509Certificate rootCert = findRootCert(certificates);
-            reorderedChain[position] = rootCert;
-
-            X509Certificate cert = rootCert;
-            while ((cert = findSignedCert(cert, certificates)) != null && position > 0) {
-                reorderedChain[--position] = cert;
-            }
-
-            return reorderedChain;
-        }
-
-        /**
-         * A helper method for certificate re-ordering. Finds the root certificate in a possibly out-of-order
-         * certificate chain.
-         *
-         * @param certificates the certificate change, possibly out-of-order
-         * @return the root certificate, if any, that was found in the list of certificates
-         */
-        private X509Certificate findRootCert(List<X509Certificate> certificates) {
-            X509Certificate rootCert = null;
-
-            for (X509Certificate cert : certificates) {
-                X509Certificate signer = findSigner(cert, certificates);
-                // no signer present, or self-signed
-                if (signer == null || signer.equals(cert)) {
-                    rootCert = cert;
-                    break;
-                }
-            }
-
-            return rootCert;
-        }
-
-        /**
-         * A helper method for certificate re-ordering. Finds the first certificate in the list of certificates that is
-         * signed by the sigingCert.
-         */
-        private X509Certificate findSignedCert(X509Certificate signingCert, List<X509Certificate> certificates) {
-            X509Certificate signed = null;
-
-            for (X509Certificate cert : certificates) {
-                Principal signingCertSubjectDN = signingCert.getSubjectDN();
-                Principal certIssuerDN = cert.getIssuerDN();
-                if (certIssuerDN.equals(signingCertSubjectDN) && !cert.equals(signingCert)) {
-                    signed = cert;
-                    break;
-                }
-            }
-
-            return signed;
-        }
-
-        /**
-         * A helper method for certificate re-ordering. Finds the certificate in the list of certificates that signed
-         * the signedCert.
-         */
-        private X509Certificate findSigner(X509Certificate signedCert, List<X509Certificate> certificates) {
-            X509Certificate signer = null;
-
-            for (X509Certificate cert : certificates) {
-                Principal certSubjectDN = cert.getSubjectDN();
-                Principal issuerDN = signedCert.getIssuerDN();
-                if (certSubjectDN.equals(issuerDN)) {
-                    signer = cert;
-                    break;
-                }
-            }
-
-            return signer;
-        }
-    }
-
-    /**
-     * Creates the generic SSL factory.
-     *
-     * @author Rohtash Lakra
-     * @date 04/12/2017 05:17:15 PM
-     */
-    public static final class SSLFactory {
-
-        /* PKCS12 */
-        public static final String PKCS12 = "PKCS12";
-
-        /* JKS */
-        public static final String JKS = "JKS";
-
-        /* TLS_VER_1 */
-        public static final String TLS_VER_1 = "TLSv1";
-
-        /* TLS_VER_2 */
-        public static final String TLS_VER_2 = "TLSv2";
-
-        /* SUN_X509 */
-        public static final String SUN_X509 = "SunX509";
-
-        /* instance */
-        private static SSLFactory instance;
-
-        /* trustAllSSLSocketFactory */
-        private SSLSocketFactory trustAllSSLSocketFactory;
-
-        /* hostNameVerifier */
-        private HostnameVerifier hostNameVerifier;
-
-        /**
-         *
-         */
-        private SSLFactory() {
-        }
-
-        /**
-         * Returns the SSL Context.
-         *
-         * @param tlsVersion
-         * @param keyManagers
-         * @param trustManagers
-         * @param secureRandom
-         * @return
-         * @throws NoSuchAlgorithmException
-         * @throws KeyManagementException
-         */
-        public SSLContext getSSLContext(String tlsVersion, KeyManager[] keyManagers, TrustManager[] trustManagers,
-                                        SecureRandom secureRandom)
-            throws NoSuchAlgorithmException, KeyManagementException {
-            System.out.println(
-                "+getSSLContext(" + tlsVersion + ", " + keyManagers + ", " + trustManagers + ", " + secureRandom
-                + "):");
-
-            SSLContext sslContext = SSLContext.getInstance(tlsVersion);
-            sslContext.init(keyManagers, trustManagers, secureRandom);
-
-            System.out.println("-getSSLContext(), sslContext:" + sslContext);
-            return sslContext;
-        }
-
-        /**
-         * Returns the SSL Context.
-         *
-         * @param tlsVersion
-         * @param keyManagers
-         * @param trustManagers
-         * @return
-         * @throws NoSuchAlgorithmException
-         * @throws KeyManagementException
-         */
-        public SSLContext getSSLContext(String tlsVersion, KeyManager[] keyManagers, TrustManager[] trustManagers)
-            throws NoSuchAlgorithmException, KeyManagementException {
-            return getSSLContext(tlsVersion, null, trustManagers, null);
-        }
-
-        /**
-         * Returns the SSL Context.
-         *
-         * @param tlsVersion
-         * @param trustManagers
-         * @param secureRandom
-         * @return
-         * @throws NoSuchAlgorithmException
-         * @throws KeyManagementException
-         */
-        public SSLContext getSSLContext(String tlsVersion, TrustManager[] trustManagers, SecureRandom secureRandom)
-            throws NoSuchAlgorithmException, KeyManagementException {
-            return getSSLContext(tlsVersion, null, trustManagers, secureRandom);
-        }
-
-        /**
-         * DefaultX509TrustManager
-         */
-        private class DefaultX509TrustManager implements X509TrustManager {
-
-            /**
-             * @param chain    the peer certificate chain
-             * @param authType the authentication type based on the client certificate
-             * @throws CertificateException
-             */
-            @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-
-            }
-
-            /**
-             * @param chain    the peer certificate chain
-             * @param authType the key exchange algorithm used
-             * @throws CertificateException
-             */
-            @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-
-            }
-
-            /**
-             * @return
-             */
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-//                return new X509Certificate[0];
-                return new java.security.cert.X509Certificate[]{};
-            }
-        }
-
-        /**
-         *
-         */
-        private static class DefaultTrustManager implements TrustManager {
-
-            private static final Logger LOGGER = LoggerFactory.getLogger(DefaultTrustManager.class);
-            private final X509TrustManager trustManager;
-
-            DefaultTrustManager(final X509TrustManager trustManager) {
-                LOGGER.debug("X509TrustManagerImpl({})", trustManager);
-                this.trustManager = trustManager;
-            }
-
-            /*
-             * @see javax.net.ssl.X509TrustManager#getAcceptedIssuers()
-             */
-            public X509Certificate[] getAcceptedIssuers() {
-                return trustManager.getAcceptedIssuers();
-            }
-
-            /*
-             * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.
-             * security. cert.X509Certificate[], java.lang.String)
-             */
-            public void checkClientTrusted(X509Certificate[] chain, String authType) {
-                try {
-                    trustManager.checkClientTrusted(chain, authType);
-                } catch (CertificateException ex) {
-                    LOGGER.error(ex.getLocalizedMessage(), ex);
-                }
-            }
-
-            /*
-             * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.
-             * security. cert.X509Certificate[], java.lang.String)
-             */
-            public void checkServerTrusted(X509Certificate[] chain, String authType) {
-                try {
-                    trustManager.checkServerTrusted(chain, authType);
-                } catch (CertificateException ex) {
-                    LOGGER.error(ex.getLocalizedMessage(), ex);
-                }
-            }
-        }
-
-        /**
-         * Creates the SSL Socket Factory.
-         *
-         * @return
-         * @throws Exception
-         */
-        private SSLSocketFactory createTrustAllSSLSocketFactory() throws Exception {
-            TrustManager[] trustEveryone = new TrustManager[]{new DefaultX509TrustManager()};
-
-            // Create an SSLContext that uses our TrustManager
-            SSLContext sslContext = getSSLContext("TLS", trustEveryone, GuardUtils.newSecureRandom());
-
-            // use a SocketFactory from our SSLContext
-            return sslContext.getSocketFactory();
-        }
-
-        /**
-         * Returns the SSL Socket Factory.
-         *
-         * @return
-         */
-        public SSLSocketFactory getTrustAllSSLSocketFactory() {
-            if (trustAllSSLSocketFactory == null) {
-                try {
-                    trustAllSSLSocketFactory = createTrustAllSSLSocketFactory();
-                } catch (Exception ex) {
-                    System.err.println(ex);
-                }
-            }
-
-            return trustAllSSLSocketFactory;
-        }
-
-        /**
-         * Returns the trustManagerFactory;
-         *
-         * @param trustKeyStore
-         * @return
-         * @throws NoSuchAlgorithmException
-         * @throws KeyStoreException
-         */
-        public TrustManager[] getTrustManagers(final KeyStore trustKeyStore)
-            throws NoSuchAlgorithmException, KeyStoreException {
-            System.out.println("+getTrustManagers(" + trustKeyStore + ")");
-            TrustManager[] trustManagers = null;
-
-            // Create a TrustManager that trusts the CAs in our KeyStore
-            String trustFactoryAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-            System.out.println("trustFactoryAlgorithm:" + trustFactoryAlgorithm);
-            TrustManagerFactory trustFactory = TrustManagerFactory.getInstance(trustFactoryAlgorithm);
-            trustFactory.init(trustKeyStore);
-            trustManagers = trustFactory.getTrustManagers();
-
-            System.out.println("-createTrustManagerFactory(), trustManagers:" + trustManagers);
-            return trustManagers;
-        }
-
-        /**
-         * Creates the SSL Socket Factory.
-         *
-         * @param certInputStream
-         * @param secureRandom
-         * @return
-         * @throws Exception
-         */
-        private SSLSocketFactory createTrustSSLSocketFactory(InputStream certInputStream, SecureRandom secureRandom)
-            throws Exception {
-            X509Certificate certificate = GuardUtils.newX509Certificate(certInputStream, true);
-
-            // Create a KeyStore containing our trusted CAs
-            String keyStoreType = KeyStore.getDefaultType();
-            System.out.println("keyStoreType:" + keyStoreType);
-            KeyStore keyStore = KeyStore.getInstance(keyStoreType);
-            keyStore.load(null, null);
-            String alias = certificate.getSubjectX500Principal().getName();
-            keyStore.setCertificateEntry(alias, certificate);
-
-            // Create a TrustManager that trusts the CAs in our KeyStore
-            final TrustManager[] trustManagers = getTrustManagers(keyStore);
-            DefaultX509TrustManager defaultX509TrustManager;
-            final X509TrustManager trustManager = (X509TrustManager) trustManagers[0];
-            final TrustManager[] wrappedTrustManagers = new TrustManager[]{new DefaultTrustManager(trustManager)};
-            // Create an SSLContext that uses our TrustManager
-            SSLContext sslContext = getSSLContext(TLS_VER_1, wrappedTrustManagers, secureRandom);
-
-            // use a SocketFactory from our SSLContext
-            return sslContext.getSocketFactory();
-        }
-
-        /**
-         * Returns the HostnameVerifier.
-         *
-         * @return
-         */
-        public HostnameVerifier getHostNameVerifier() {
-            if (hostNameVerifier == null) {
-                hostNameVerifier = new AllHostVerifier();
-            }
-
-            return hostNameVerifier;
-        }
-
-        /**
-         * The SSL socket factor to be set.
-         *
-         * @param urlConnection
-         */
-        public void setSSLSocketFactory(HttpURLConnection urlConnection) {
-            if (urlConnection instanceof HttpsURLConnection) {
-                SSLSocketFactory sslSocketFactory = null;
-                sslSocketFactory = getTrustAllSSLSocketFactory();
-                ((HttpsURLConnection) urlConnection).setSSLSocketFactory(sslSocketFactory);
-                ((HttpsURLConnection) urlConnection).setHostnameVerifier(getHostNameVerifier());
-            }
-        }
-
-        /**
-         * Produces a KeyStore from a PKCS12 (.p12) certificate file, typically the client certificate
-         *
-         * @param p12CertInputStream
-         * @param p12CertPass
-         * @param closeStream
-         * @return
-         * @throws GeneralSecurityException
-         * @throws IOException
-         */
-        public KeyStore loadPKCS12KeyStore(InputStream p12CertInputStream, char[] p12CertPass, boolean closeStream)
-            throws GeneralSecurityException, IOException {
-            KeyStore keyStore = KeyStore.getInstance(PKCS12);
-            keyStore.load(p12CertInputStream, p12CertPass);
-            if (closeStream) {
-                IOUtils.closeSilently(p12CertInputStream);
-            }
-
-            return keyStore;
-        }
-
-        /**
-         * Produces a KeyStore from a PKCS12 (.p12) certificate file, typically the client certificate
-         *
-         * @param p12CertFileName
-         * @param p12CertPassword
-         * @return
-         * @throws GeneralSecurityException
-         * @throws IOException
-         */
-        public KeyStore loadPKCS12KeyStore(String p12CertFileName, String p12CertPassword)
-            throws GeneralSecurityException, IOException {
-            return loadPKCS12KeyStore(IOUtils.toInputStream(IOUtils.readBytes(p12CertFileName)),
-                                      p12CertPassword.toCharArray(), false);
-        }
-
-        /**
-         * Reads and decodes a base-64 encoded DER certificate (a .pem certificate), typically the server's CA
-         * certificate.
-         *
-         * @param pemCertificateStream
-         * @return
-         * @throws IOException
-         */
-        public byte[] loadPEMCertificate(InputStream pemCertificateStream) throws IOException {
-            byte[] pemDecodedBytes = null;
-            BufferedReader bufferedReader = null;
-            try {
-                final StringBuilder pemBuilder = new StringBuilder();
-                bufferedReader = new BufferedReader(new InputStreamReader(pemCertificateStream));
-                String line = bufferedReader.readLine();
-                while (line != null) {
-                    if (!line.startsWith("--")) {
-                        pemBuilder.append(line);
-                    }
-                    line = bufferedReader.readLine();
-                }
-
-                pemDecodedBytes = Base64.getDecoder().decode(pemBuilder.toString());
-            } finally {
-                IOUtils.closeSilently(bufferedReader);
-            }
-
-            return pemDecodedBytes;
-        }
-
-        /**
-         * Creates an SSLContext with the client and server certificates
-         *
-         * @param p12CertFileName A File containing the client certificate
-         * @param p12CertPassword Password for the client certificate
-         * @param caCertString    A String containing the server certificate
-         * @return An initialized SSLContext
-         * @throws Exception
-         */
-        private SSLContext createSSLContext(String p12CertFileName, String p12CertPassword, String caCertString)
-            throws Exception {
-            final KeyStore keyStore = loadPKCS12KeyStore(p12CertFileName, p12CertPassword);
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance("X509");
-            kmf.init(keyStore, p12CertPassword.toCharArray());
-            KeyManager[] keyManagers = kmf.getKeyManagers();
-
-            final KeyStore trustStore = loadPEMTrustStore(caCertString);
-            TrustManager[] trustManagers = {new CustomTrustManager(trustStore)};
-
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(keyManagers, trustManagers, null);
-
-            return sslContext;
-        }
-
-        /**
-         * Produces a KeyStore from a String containing a PEM certificate (typically, the server's CA certificate)
-         *
-         * @param certificateString A String containing the PEM-encoded certificate
-         * @return a KeyStore (to be used as a trust store) that contains the certificate
-         * @throws Exception
-         */
-        private KeyStore loadPEMTrustStore(String certificateString) throws Exception {
-            byte[] pemDecodedBytes = loadPEMCertificate(new ByteArrayInputStream(certificateString.getBytes()));
-            ByteArrayInputStream derInputStream = new ByteArrayInputStream(pemDecodedBytes);
-
-            X509Certificate x509Certificate = GuardUtils.newX509Certificate(derInputStream, true);
-            KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            trustStore.load(null);
-            String alias = x509Certificate.getSubjectX500Principal().getName();
-            trustStore.setCertificateEntry(alias, x509Certificate);
-
-            return trustStore;
-        }
-
-    }
-
 
     /**
      * @param inputStream
@@ -3154,17 +2426,17 @@ public enum HTTPUtils {
     public HttpClient getHttpClient(final int maxConnections, final int connectTimeout, final int socketTimeout,
                                     final int maxRetries, final int retryInterval) {
         final HttpClient
-            httpClient =
-            HttpClients.custom().setUserAgent("HttpClient")
-                .setConnectionReuseStrategy(new DefaultConnectionReuseStrategy()).setSSLSocketFactory(
-                    new SSLConnectionSocketFactory(SSLContexts.createDefault(), NoopHostnameVerifier.INSTANCE))
-                .setDefaultHeaders(DEFAULT_HEADERS).setMaxConnPerRoute(maxConnections)
-                .setMaxConnTotal(Integer.MAX_VALUE)
-                .setServiceUnavailableRetryStrategy(new ServiceUnavailableRetryStrategy(maxRetries, retryInterval))
-                .setRetryHandler(new DefaultHttpRequestRetryHandler())
-                .setRedirectStrategy(new DefaultRedirectStrategy()).setDefaultRequestConfig(
-                    RequestConfig.custom().setConnectTimeout(connectTimeout).setSocketTimeout(socketTimeout).build())
-                .build();
+                httpClient =
+                HttpClients.custom().setUserAgent("HttpClient")
+                        .setConnectionReuseStrategy(new DefaultConnectionReuseStrategy()).setSSLSocketFactory(
+                                new SSLConnectionSocketFactory(SSLContexts.createDefault(), NoopHostnameVerifier.INSTANCE))
+                        .setDefaultHeaders(DEFAULT_HEADERS).setMaxConnPerRoute(maxConnections)
+                        .setMaxConnTotal(Integer.MAX_VALUE)
+                        .setServiceUnavailableRetryStrategy(new ServiceUnavailableRetryStrategy(maxRetries, retryInterval))
+                        .setRetryHandler(new DefaultHttpRequestRetryHandler())
+                        .setRedirectStrategy(new DefaultRedirectStrategy()).setDefaultRequestConfig(
+                                RequestConfig.custom().setConnectTimeout(connectTimeout).setSocketTimeout(socketTimeout).build())
+                        .build();
         return httpClient;
     }
 
@@ -3186,7 +2458,7 @@ public enum HTTPUtils {
      */
     public static String getContentType(final HttpMessage httpMessage) {
         return (BeanUtils.isNull(httpMessage) ? null : httpMessage.getFirstHeader(Headers.CONTENT_TYPE.toLowerCase())
-            .getValue());
+                .getValue());
     }
 
     /**
@@ -3232,7 +2504,7 @@ public enum HTTPUtils {
     public static String acceptEncodingHeader(final HttpRequest httpRequest, final String contentEncoding) {
         final StringBuilder headerBuilder = acceptEncodingHeader(httpRequest);
         return (headerBuilder.toString().contains(contentEncoding) ? headerBuilder.toString()
-            .substring(0, headerBuilder.lastIndexOf(",")) : headerBuilder.append(contentEncoding).toString());
+                .substring(0, headerBuilder.lastIndexOf(",")) : headerBuilder.append(contentEncoding).toString());
     }
 
     /**
@@ -3256,7 +2528,7 @@ public enum HTTPUtils {
      */
     public static String nextRequestTracer(final String requestTracerPrefix) {
         return String.format("%s-%d", (requestTracerPrefix == null ? "requestTracer" : requestTracerPrefix),
-                             System.currentTimeMillis());
+                System.currentTimeMillis());
     }
 
     /**
@@ -3274,7 +2546,7 @@ public enum HTTPUtils {
      */
     public static boolean hasHeader(final HttpMessage httpMessage, final String headerName) {
         return (BeanUtils.isNotNull(httpMessage) && BeanUtils.isNotEmpty(headerName) && httpMessage.containsHeader(
-            headerName));
+                headerName));
     }
 
     /**
