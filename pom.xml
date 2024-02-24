@@ -35,7 +35,7 @@
         <checkstyle.threshold>0</checkstyle.threshold>
 
         <!-- appsuite-core -->
-        <appsuite-core.version>0.0.25</appsuite-core.version>
+        <appsuite-core.version>0.0.28</appsuite-core.version>
 
         <!-- logging -->
         <slf4j-api.version>2.0.6</slf4j-api.version>
