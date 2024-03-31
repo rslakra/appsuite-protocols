@@ -24,11 +24,11 @@ public final class RestClient extends RestBuilder {
     }
 
     /**
-     * @param defaultURI
+     * @param defaultUri
      * @throws URISyntaxException
      */
-    public RestClient(Object defaultURI) throws URISyntaxException {
-        super(defaultURI);
+    public RestClient(Object defaultUri) throws URISyntaxException {
+        super(defaultUri);
     }
 
     /**

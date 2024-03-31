@@ -25,6 +25,10 @@ import java.security.KeyStore;
  */
 public class AuthConfig {
 
+    private static final String HTTPS = "https";
+    private static final int SSL_PORT = 443;
+    private static final Scheme DEFAULT_SCHEME = new Scheme(HTTPS, SSL_PORT, null);
+
     private RestBuilder restBuilder;
 
     /**
@@ -42,7 +46,6 @@ public class AuthConfig {
     }
 
     /**
-     *
      * @param user
      * @param pass
      */
@@ -56,7 +59,6 @@ public class AuthConfig {
     }
 
     /**
-     *
      * @param host
      * @param port
      * @param user
@@ -73,7 +75,6 @@ public class AuthConfig {
     }
 
     /**
-     *
      * @param user
      * @param pass
      * @param workstation
@@ -89,7 +90,6 @@ public class AuthConfig {
     }
 
     /**
-     *
      * @param host
      * @param port
      * @param user
@@ -108,15 +108,14 @@ public class AuthConfig {
     }
 
     /**
-     *
-     * @param certURL
+     * @param certUrl
      * @param password
      * @throws GeneralSecurityException
      * @throws IOException
      */
-    public void certificate(String certURL, String password) throws GeneralSecurityException, IOException {
+    public void certificate(String certUrl, String password) throws GeneralSecurityException, IOException {
         KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-        InputStream jksStream = (new URL(certURL)).openStream();
+        InputStream jksStream = (new URL(certUrl)).openStream();
 
         try {
             keyStore.load(jksStream, password.toCharArray());
@@ -124,13 +123,15 @@ public class AuthConfig {
             jksStream.close();
         }
 
-        SSLSocketFactory ssl = new SSLSocketFactory(keyStore, password);
-        ssl.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
-        getBuilder().getHttpClient().getConnectionManager().getSchemeRegistry().register(new Scheme("https", ssl, 443));
+        SSLSocketFactory socketFactory = new SSLSocketFactory(keyStore, password);
+        socketFactory.setHostnameVerifier(SSLSocketFactory.STRICT_HOSTNAME_VERIFIER);
+        getBuilder().getHttpClient()
+            .getConnectionManager()
+            .getSchemeRegistry()
+            .register(new Scheme(HTTPS, socketFactory, SSL_PORT));
     }
 
     /**
-     *
      * @param consumerKey
      * @param consumerSecret
      * @param accessToken
@@ -141,30 +142,43 @@ public class AuthConfig {
         if (!(client instanceof AbstractHttpClient)) {
             throw new IllegalStateException("client is not an AbstractHttpClient");
         } else {
-            ((AbstractHttpClient) client).removeRequestInterceptorByClass(AuthConfig.OAuthSigner.class);
+            AbstractHttpClient httpClient = ((AbstractHttpClient) client);
+            httpClient.removeRequestInterceptorByClass(AuthConfig.OAuthSigner.class);
             if (consumerKey != null) {
-//                ((AbstractHttpClient) client).addRequestInterceptor(
-//                    new AuthConfig.OAuthSigner(consumerKey, consumerSecret, accessToken, secretToken));
+                httpClient.addRequestInterceptor(
+                    new OAuthSigner(consumerKey, consumerSecret, accessToken, secretToken));
             }
-
         }
     }
 
-    static class OAuthSigner implements HttpRequestInterceptor {
+    /**
+     * OAuthSigner request interceptor
+     */
+    private static class OAuthSigner implements HttpRequestInterceptor {
 
-        @Override
-        public void process(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
+        private String consumerKey;
+        private String consumerSecret;
+        private String accessToken;
+        private String secretToken;
 
-        }
+//        protected OAuthConsumer oauth;
 
-// protected OAuthConsumer oauth;
-//
-// public OAuthSigner(String consumerKey, String consumerSecret, String accessToken, String secretToken) {
+        /**
+         * @param consumerKey
+         * @param consumerSecret
+         * @param accessToken
+         * @param secretToken
+         */
+        public OAuthSigner(String consumerKey, String consumerSecret, String accessToken, String secretToken) {
+            this.consumerKey = consumerKey;
+            this.consumerSecret = consumerSecret;
+            this.accessToken = accessToken;
+            this.secretToken = secretToken;
 //            this.oauth = new CommonsHttpOAuthConsumer(consumerKey, consumerSecret);
 //            this.oauth.setTokenWithSecret(accessToken, secretToken);
-// }
+        }
 //
-// public void process(HttpRequest request, HttpContext ctx) throws HttpException, IOException {
+//        public void process(HttpRequest request, HttpContext ctx) throws HttpException, IOException {
 //            try {
 //                HttpHost host = (HttpHost) ctx.getAttribute("rest.target_host");
 //                URI requestURI = (new URI(host.toURI())).resolve(request.getRequestLine().getUri());
@@ -177,9 +191,9 @@ public class AuthConfig {
 //            } catch (OAuthException var7) {
 //                throw new HttpException("OAuth signing error", var7);
 //            }
-// }
+//        }
 //
-// static class OAuthRequestAdapter implements oauth.signpost.rest.HttpRequest {
+//        static class OAuthRequestAdapter implements oauth.signpost.rest.HttpRequest {
 //
 //            final HttpRequest request;
 //            final URI requestURI;
@@ -235,6 +249,17 @@ public class AuthConfig {
 //            public Object unwrap() {
 //                return this.request;
 //            }
-// }
+//        }
+
+        /**
+         * @param httpRequest the request to preprocess
+         * @param httpContext the context for the request
+         * @throws HttpException
+         * @throws IOException
+         */
+        @Override
+        public void process(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
+
+        }
     }
 }

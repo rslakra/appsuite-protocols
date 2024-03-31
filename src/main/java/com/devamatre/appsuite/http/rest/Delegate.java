@@ -4,6 +4,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Rohtash Lakra
@@ -11,10 +12,10 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@java.lang.annotation.Target({ElementType.PARAMETER})
+@Target({ElementType.PARAMETER})
 public @interface Delegate {
 
-    Class value() default Delegate.Target.class;
+    Class value() default Delegate.DelegateTarget.class;
 
     int strategy() default 0;
 
@@ -25,8 +26,8 @@ public @interface Delegate {
     String type() default "";
 
     @Retention(RetentionPolicy.RUNTIME)
-    @java.lang.annotation.Target({ElementType.PARAMETER})
-    public @interface Target {
+    @Target({ElementType.PARAMETER})
+    public @interface DelegateTarget {
 
         String value() default "";
     }
