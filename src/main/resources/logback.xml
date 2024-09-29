@@ -15,7 +15,7 @@
     <!-- slf4j -->
     <logger name="ch.qos.logback.core.joran" level="WARN"/>
     <!-- rslakra -->
-    <logger name="com.devamatre" level="DEBUG"/>
+    <logger name="com.rslakra" level="DEBUG"/>
 
     <!-- zaxxer -->
     <logger name="com.zaxxer" level="WARN"/>
