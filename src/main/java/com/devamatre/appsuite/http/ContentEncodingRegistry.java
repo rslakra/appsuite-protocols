@@ -1,8 +1,8 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
-import com.devamatre.appsuite.core.BeanUtils;
-import com.devamatre.appsuite.http.encoding.DeflateEncoding;
-import com.devamatre.appsuite.http.encoding.GZIPEncoding;
+import com.rslakra.appsuite.core.BeanUtils;
+import com.rslakra.appsuite.http.encoding.DeflateEncoding;
+import com.rslakra.appsuite.http.encoding.GZIPEncoding;
 import org.apache.http.impl.client.AbstractHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

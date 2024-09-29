@@ -1,6 +1,6 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
-import com.devamatre.appsuite.core.BeanUtils;
+import com.rslakra.appsuite.core.BeanUtils;
 import io.github.resilience4j.circuitbreaker.CallNotPermittedException;
 import io.github.resilience4j.decorators.Decorators;
 import org.apache.commons.lang3.time.StopWatch;

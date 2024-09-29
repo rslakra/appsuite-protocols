@@ -1,7 +1,7 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
-import com.devamatre.appsuite.core.BeanUtils;
-import com.devamatre.appsuite.core.ToString;
+import com.rslakra.appsuite.core.BeanUtils;
+import com.rslakra.appsuite.core.ToString;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ResponseHandler;
 import org.slf4j.Logger;

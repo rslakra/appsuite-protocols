@@ -1,4 +1,4 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
 /**
  * @author Rohtash Lakra

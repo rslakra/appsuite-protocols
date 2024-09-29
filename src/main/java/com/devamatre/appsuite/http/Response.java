@@ -1,8 +1,8 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
-import com.devamatre.appsuite.core.BeanUtils;
-import com.devamatre.appsuite.core.IOUtils;
-import com.devamatre.appsuite.core.ToString;
+import com.rslakra.appsuite.core.BeanUtils;
+import com.rslakra.appsuite.core.IOUtils;
+import com.rslakra.appsuite.core.ToString;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.message.BasicStatusLine;

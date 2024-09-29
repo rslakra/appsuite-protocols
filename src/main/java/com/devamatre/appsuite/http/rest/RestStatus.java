@@ -1,6 +1,6 @@
-package com.devamatre.appsuite.http.rest;
+package com.rslakra.appsuite.http.rest;
 
-import com.devamatre.appsuite.core.ToString;
+import com.rslakra.appsuite.core.ToString;
 
 /**
  * @author Rohtash Lakra

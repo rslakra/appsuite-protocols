@@ -1,6 +1,6 @@
-package com.devamatre.appsuite.http.rest;
+package com.rslakra.appsuite.http.rest;
 
-import com.devamatre.appsuite.http.HTTPUtils;
+import com.rslakra.appsuite.http.HTTPUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderIterator;
 import org.apache.http.HttpEntity;

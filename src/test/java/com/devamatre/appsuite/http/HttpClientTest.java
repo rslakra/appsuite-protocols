@@ -1,7 +1,7 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
-import com.devamatre.appsuite.core.StopWatch;
-import com.devamatre.appsuite.core.jwt.JWTUtils;
+import com.rslakra.appsuite.core.StopWatch;
+import com.rslakra.appsuite.core.jwt.JWTUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;

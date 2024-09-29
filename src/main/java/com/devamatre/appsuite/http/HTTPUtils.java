@@ -28,13 +28,13 @@
  * Devamatre reserves the right to modify the technical specifications and or
  * features without any prior notice.
  *****************************************************************************/
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
-import com.devamatre.appsuite.core.BeanUtils;
-import com.devamatre.appsuite.core.CharSets;
-import com.devamatre.appsuite.core.IOUtils;
-import com.devamatre.appsuite.core.StopWatch;
-import com.devamatre.appsuite.core.security.GuardUtils;
+import com.rslakra.appsuite.core.BeanUtils;
+import com.rslakra.appsuite.core.CharSets;
+import com.rslakra.appsuite.core.IOUtils;
+import com.rslakra.appsuite.core.StopWatch;
+import com.rslakra.appsuite.core.security.GuardUtils;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;

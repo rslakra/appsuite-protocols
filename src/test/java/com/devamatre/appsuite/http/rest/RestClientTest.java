@@ -1,4 +1,4 @@
-package com.devamatre.appsuite.http.rest;
+package com.rslakra.appsuite.http.rest;
 
 import java.net.URISyntaxException;
 

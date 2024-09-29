@@ -1,4 +1,4 @@
-package com.devamatre.appsuite.http.rest;
+package com.rslakra.appsuite.http.rest;
 
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;

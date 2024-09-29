@@ -1,4 +1,4 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
 import static com.xebialabs.restito.semantics.Action.composite;
 import static com.xebialabs.restito.semantics.Action.delay;

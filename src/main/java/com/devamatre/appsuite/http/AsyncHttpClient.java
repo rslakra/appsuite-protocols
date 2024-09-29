@@ -1,6 +1,6 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
-import com.devamatre.appsuite.core.IOUtils;
+import com.rslakra.appsuite.core.IOUtils;
 import io.github.resilience4j.decorators.Decorators;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;

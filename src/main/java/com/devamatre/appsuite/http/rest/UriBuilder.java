@@ -1,6 +1,6 @@
-package com.devamatre.appsuite.http.rest;
+package com.rslakra.appsuite.http.rest;
 
-import com.devamatre.appsuite.core.BeanUtils;
+import com.rslakra.appsuite.core.BeanUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.message.BasicNameValuePair;

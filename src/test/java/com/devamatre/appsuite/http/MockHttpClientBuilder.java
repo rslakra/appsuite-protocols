@@ -1,4 +1,4 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.ProtocolVersion;

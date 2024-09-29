@@ -1,6 +1,6 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
-import com.devamatre.appsuite.core.ArrayIterator;
+import com.rslakra.appsuite.core.ArrayIterator;
 
 import java.util.Iterator;
 

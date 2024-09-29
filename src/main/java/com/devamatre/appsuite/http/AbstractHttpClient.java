@@ -1,7 +1,7 @@
-package com.devamatre.appsuite.http;
+package com.rslakra.appsuite.http;
 
-import com.devamatre.appsuite.core.BeanUtils;
-import com.devamatre.appsuite.core.IOUtils;
+import com.rslakra.appsuite.core.BeanUtils;
+import com.rslakra.appsuite.core.IOUtils;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.retry.Retry;
 import org.apache.commons.collections4.MapUtils;

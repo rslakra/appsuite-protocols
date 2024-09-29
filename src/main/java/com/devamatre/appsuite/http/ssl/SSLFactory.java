@@ -1,7 +1,7 @@
-package com.devamatre.appsuite.http.ssl;
+package com.rslakra.appsuite.http.ssl;
 
-import com.devamatre.appsuite.core.IOUtils;
-import com.devamatre.appsuite.core.security.GuardUtils;
+import com.rslakra.appsuite.core.IOUtils;
+import com.rslakra.appsuite.core.security.GuardUtils;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;

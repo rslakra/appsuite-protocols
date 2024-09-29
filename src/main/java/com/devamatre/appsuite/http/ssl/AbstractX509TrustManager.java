@@ -1,4 +1,4 @@
-package com.devamatre.appsuite.http.ssl;
+package com.rslakra.appsuite.http.ssl;
 
 import javax.net.ssl.X509TrustManager;
 

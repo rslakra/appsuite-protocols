@@ -1,6 +1,6 @@
-package com.devamatre.appsuite.http.encoding;
+package com.rslakra.appsuite.http.encoding;
 
-import com.devamatre.appsuite.http.ContentEncoding;
+import com.rslakra.appsuite.http.ContentEncoding;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.DeflateDecompressingEntity;
 

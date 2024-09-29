@@ -1,11 +1,11 @@
-package com.devamatre.appsuite.http.rest;
+package com.rslakra.appsuite.http.rest;
 
-import com.devamatre.appsuite.core.Payload;
-import com.devamatre.appsuite.http.ContentEncoding;
-import com.devamatre.appsuite.http.ContentEncodingRegistry;
-import com.devamatre.appsuite.http.ContentType;
-import com.devamatre.appsuite.http.HTTPUtils;
-import com.devamatre.appsuite.http.HttpMethod;
+import com.rslakra.appsuite.core.Payload;
+import com.rslakra.appsuite.http.ContentEncoding;
+import com.rslakra.appsuite.http.ContentEncodingRegistry;
+import com.rslakra.appsuite.http.ContentType;
+import com.rslakra.appsuite.http.HTTPUtils;
+import com.rslakra.appsuite.http.HttpMethod;
 import org.apache.commons.collections4.Closure;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
