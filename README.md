@@ -1,8 +1,8 @@
-# appsuite-http-client
+# appsuite-protocols
 
 ---
 
-The ```appsuite-http-client``` project is the http-client component.
+The ```appsuite-protocols``` project is the http-server component.
 
 ## How to set up
 
@@ -10,7 +10,7 @@ The ```appsuite-http-client``` project is the http-client component.
 
 ### 1. Clone the repository in your GIT account or local machine
 
-> ```https://github.com/rslakra/appsuite-http-client.git```
+> ```https://github.com/rslakra/appsuite-protocols.git```
 
 ### 2. Build the project
 
@@ -28,6 +28,52 @@ Run the program with the following command
 
 * [Java](https://www.java.com/en/download/mac_download.jsp) - The Java Download Location
 * [Maven](https://maven.apache.org/) - Dependency Management
+
+
+## MIME-TYPES
+
+- **IMAGE MIME-TYPES**
+
+| MIME-TYPE | EXTENSION |
+|-----------|-----------|
+| image/bmp | bmp |
+| image/cgm | cgm |
+| image/g3fax | g3 |
+| image/gif | gif |
+| image/ief | ief |
+| image/jpeg | jpeg, jpg, jpe |
+| image/png | png |
+| image/prs.btif | btif |
+| image/svg+xml | svg, svgz |
+| image/tiff | tiff, tif |
+| image/vnd.adobe.photoshop | psd |
+| image/vnd.djvu | djvu djv |
+| image/vnd.dwg | dwg |
+| image/vnd.dxf | dxf |
+| image/vnd.fastbidsheet | fbs |
+| image/vnd.fpx | fpx |
+| image/vnd.fst | fst |
+| image/vnd.fujixerox.edmics-mmr | mmr |
+| image/vnd.fujixerox.edmics-rlc | rlc |
+| image/vnd.ms-modi | mdi |
+| image/vnd.net-fpx | npx |
+| image/vnd.wap.wbmp | wbmp, wbmp |
+| image/vnd.xiff | xif |
+| image/x-cmu-raster | ras |
+| image/x-cmx | cmx |
+| image/x-icon | ico |
+| image/x-pcx | pcx |
+| image/x-pict | pic, pct |
+| image/x-portable-anymap | pnm |
+| image/x-portable-bitmap | pbm |
+| image/x-portable-graymap | pgm |
+| image/x-portable-pixmap | ppm |
+| image/x-rgb | rgb |
+| image/x-xbitmap | xbm |
+| image/x-xpixmap | xpm |
+| image/x-xwindowdump | xwd |
+
+
 
 ## Authors
 
