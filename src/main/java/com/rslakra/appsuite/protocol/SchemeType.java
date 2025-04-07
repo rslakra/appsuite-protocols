@@ -1,5 +1,9 @@
 package com.rslakra.appsuite.protocol;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Arrays;
+
 /**
  * A protocol scheme is a combination of a protocol and a scheme, where a
  * protocol is how a browser communicates with a service, and a scheme is how a
@@ -27,6 +31,7 @@ package com.rslakra.appsuite.protocol;
  */
 
 public enum SchemeType {
+
     /* Hypertext Transfer Protocol, a common protocol used in URLs */
     HTTP,
     /* Hypertext Transfer Protocol Secure, a common protocol used in URLs */
@@ -35,5 +40,28 @@ public enum SchemeType {
     FTP,
     TCP,
     UDP,
+    ;
+
+    /**
+     * @param schemeType
+     * @return
+     */
+    public static SchemeType ofString(final String schemeType) {
+        return Arrays.stream(values())
+                .filter(entry -> entry.name().equalsIgnoreCase(schemeType))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public static URL toUrl(String host, int port, boolean sslAllowed) {
+        try {
+            String schemeType = sslAllowed ? HTTPS.name().toLowerCase() : HTTP.name().toLowerCase();
+            return new URL(schemeType + "://" + host + ":" + port);
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
 }
 

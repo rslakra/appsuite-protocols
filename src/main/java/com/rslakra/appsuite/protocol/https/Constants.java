@@ -30,19 +30,15 @@
  *****************************************************************************/
 package com.rslakra.appsuite.protocol.https;
 
+import com.rslakra.appsuite.protocol.SchemeType;
+
+import javax.net.ssl.*;
 import java.io.File;
 import java.io.FileInputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyStore;
-
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
 
 /**
  * @author Rohtash Lakra
@@ -90,16 +86,7 @@ public interface Constants {
      * @return
      */
     static URL newURL(String host, int port, boolean sslAllowed) {
-        try {
-            if (sslAllowed) {
-                return new URL("https://" + host + ":" + port);
-            } else {
-                return new URL("http://" + host + ":" + port);
-            }
-        } catch (MalformedURLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
+        return SchemeType.toUrl(host, port, sslAllowed);
     }
 
     /**
