@@ -4,10 +4,13 @@ import com.rslakra.appsuite.core.BeanUtils;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Rohtash Lakra
@@ -15,7 +18,11 @@ import java.util.Map;
  */
 @Getter
 @Setter
-public final class Headers extends LinkedHashMap<String, List<String>> {
+public final class Headers extends AbstractMap<String, List<String>> {
+
+    // insertion-ordered storage (declared as Map to satisfy the IllegalType checkstyle rule)
+    @Getter(lombok.AccessLevel.NONE)
+    private final Map<String, List<String>> headers = new LinkedHashMap<>();
 
     public static final String ACCEPT_LANGUAGE_VALUE = "en-US,en;q=0.5";
     public static final String KEEP_ALIVE = "keep-alive";
@@ -57,11 +64,21 @@ public final class Headers extends LinkedHashMap<String, List<String>> {
      * @param values
      */
     public void addHeader(final String key, final List<String> values) {
-        if (super.containsKey(key)) {
-            super.get(key).addAll(values);
+        if (headers.containsKey(key)) {
+            headers.get(key).addAll(values);
         } else {
-            super.put(key, values);
+            headers.put(key, new ArrayList<>(values));
         }
+    }
+
+    @Override
+    public Set<Entry<String, List<String>>> entrySet() {
+        return headers.entrySet();
+    }
+
+    @Override
+    public List<String> put(final String key, final List<String> values) {
+        return headers.put(key, values);
     }
 
     /**
@@ -93,7 +110,7 @@ public final class Headers extends LinkedHashMap<String, List<String>> {
      * @return
      */
     public List<String> getHeaders(final String key) {
-        return super.get(key);
+        return headers.get(key);
     }
 
 }

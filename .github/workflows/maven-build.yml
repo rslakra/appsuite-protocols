@@ -1,0 +1,52 @@
+name: Build Maven Package
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    env:
+      JDK_VERSION: '21'
+      # version used to build/install appsuite-core locally and consumed by this project
+      CORE_VERSION: '0.0.0-LOCAL'
+      VERSION: ${{ github.run_id }}.${{ github.run_number }}.${{ github.run_attempt }}
+
+    name: Build & Test (Units & Integrations)
+    runs-on: ubuntu-latest
+
+    # makes sure that workflow has access to the code.
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK ${{ env.JDK_VERSION }}
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JDK_VERSION }}
+          distribution: 'temurin'
+          cache: maven
+
+      # Checkout appsuite-core (dependency) into ./appsuite-core
+      - name: Checkout appsuite-core
+        uses: actions/checkout@v4
+        with:
+          repository: rslakra/appsuite-core
+          path: appsuite-core
+
+      # Build and install appsuite-core into the local maven repository
+      - name: Build & Install appsuite-core
+        working-directory: appsuite-core
+        run: mvn -B clean install -DskipTests -Drevision=$CORE_VERSION
+
+      - name: Build & Verify
+        run: mvn -B clean verify -Dappsuite-core.version=$CORE_VERSION
