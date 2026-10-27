@@ -6,7 +6,6 @@ import com.rslakra.appsuite.protocol.http.ContentEncodingRegistry;
 import com.rslakra.appsuite.protocol.http.ContentType;
 import com.rslakra.appsuite.protocol.http.HTTPUtils;
 import com.rslakra.appsuite.protocol.http.HttpMethod;
-import com.rslakra.appsuite.protocol.http.*;
 import org.apache.commons.collections4.Closure;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
